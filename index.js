@@ -1,7 +1,7 @@
 const express = require("express");
 const puppeteer = require("puppeteer");
 const { google } = require("googleapis");
-const creds = require("./service_account.json");
+const creds = require("/etc/secrets/service_account.json");
 
 const SHEET_ID = "1vIqx77znUB9gF6zlyXgpk1Tjvogf4xv4zi6qf7Hcu0Q";
 const SHEET_NAME = "Masterlist";

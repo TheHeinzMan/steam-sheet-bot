@@ -1,3 +1,4 @@
+
 const express = require("express");
 const puppeteer = require("puppeteer");
 const { google } = require("googleapis");
@@ -79,27 +80,29 @@ async function writeToSheet(auth, values) {
 }
 
 app.get("/", async (req, res) => {
-  const auth = await authorize();
-  const steamIDs = await readSteamIDs(auth);
+  res.send("✅ Task started. Check the Google Sheet for updates!");
 
-  const browser = await puppeteer.launch({
-    headless: 'new',
-    args: ['--no-sandbox', '--disable-setuid-sandbox'],
-  });
+  (async () => {
+    const auth = await authorize();
+    const steamIDs = await readSteamIDs(auth);
 
-  const results = [];
+    const browser = await puppeteer.launch({
+      headless: 'new',
+      args: ['--no-sandbox', '--disable-setuid-sandbox'],
+    });
 
-  for (const steamId of steamIDs) {
-    console.log("Checking:", steamId);
-    const result = await scrapeLastSeen(browser, steamId);
-    results.push(result);
-  }
+    const results = [];
 
-  await browser.close();
-  await writeToSheet(auth, results);
-  console.log("✅ Done!");
+    for (const steamId of steamIDs) {
+      console.log("Checking:", steamId);
+      const result = await scrapeLastSeen(browser, steamId);
+      results.push(result);
+    }
 
-  res.send("✅ Updated Google Sheet with Last Seen data!");
+    await browser.close();
+    await writeToSheet(auth, results);
+    console.log("✅ Done!");
+  })();
 });
 
 app.listen(PORT, () => {

@@ -81,7 +81,12 @@ async function writeToSheet(auth, values) {
 app.get("/", async (req, res) => {
   const auth = await authorize();
   const steamIDs = await readSteamIDs(auth);
-  const browser = await puppeteer.launch({ headless: "new" });
+
+  const browser = await puppeteer.launch({
+    headless: 'new',
+    args: ['--no-sandbox', '--disable-setuid-sandbox'],
+  });
+
   const results = [];
 
   for (const steamId of steamIDs) {
